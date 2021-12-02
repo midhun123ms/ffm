@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pfa_crm_custom_id" model="ir.ui.view">
+        <field name="name">pfa.crm.view.custom.name</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='team_id']" position="after">
+                <field name="business_developer"/>
+                <field name="account_manager"/>
+                <field name="cuisine" widget="many2many_tags"/>
+                <field name="working_hours"/>
+                <field name="reason"/>
+                <field name="establishment_date"/>
+                <field name="grid_id"/>
+                <field name="status"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='lead']" position="after">
+                <page string="Address Information" name="Address Information">
+                    <group string="Address Information">
+                        <group>
+                            <field name="address_type" widget="many2many_tags"/>
+                            <field name="address1"/>
+                            <field name="address2"/>
+                            <field name="region"/>
+                            <field name="country"/>
+                            <field name="city"/>
+                        </group>
+                        <group>
+                            <field name="area"/>
+                            <field name="landmark"/>
+                            <field name="google_link"/>
+                            <field name="latitude"/>
+                            <field name="longitude"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//notebook/page[@name='Address Information']" position="after">
+                <page string="Quotations" name="quotations">
+                    <group string="Quotations">
+                        <group>
+                            <field name="customer_name"/>
+                            <field name="quote_expiry"/>
+                        </group>
+                        <group>
+                            <field name="quote_owner"/>
+                            <field name="add_product" widget="many2many_tags"/>
+                        </group>
+                        <group></group>
+                    </group>
+                    <field name="terms" placeholder="Terms and Conditions"/>
+                </page>
+            </xpath>
+            <xpath expr="//notebook/page[@name='quotations']" position="after">
+                <page string="Legal Info" name="legal_info">
+                    <group string="Legal Information">
+                        <group>
+                            <field name="cr_name"/>
+                            <field name="payment_type"/>
+                            <field name="payment_terms"/>
+                            <field name="credit_limit"/>
+                            <field name="attachments" widget="file"/>
+                        </group>
+                        <group>
+                            <field name="crno"/>
+                            <field name="cr_number" widget="file"/>
+                            <field name="vatno"/>
+                            <field name="vat_number" widget="file"/>
+                            <field name="csa"/>
+                            <field name="csa_file" widget="file"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//notebook/page[@name='legal_info']" position="after">
+                <page string="Bank Details" name="bank_page">
+                    <group string="Bank Details">
+                        <group>
+                            <field name="bank_name"/>
+                            <field name="idc"/>
+                            <field name="account_name"/>
+                        </group>
+                        <group>
+                            <field name="account_number"/>
+                            <field name="iban"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//notebook/page[@name='internal_notes']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//notebook/page[@name='lead']" position="replace">
+                <page name="lead" string="Contact Information" attrs="{'invisible': [('type', '=', 'lead')]}">
+                    <group>
+                        <group string="Contact Information">
+                            <field name="partner_name"/>
+                            <label for="street_page_lead" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="street" id="street_page_lead" placeholder="Street..."
+                                       class="o_address_street"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                                <field name="state_id" class="o_address_state" placeholder="State"
+                                       options='{"no_open": True}'/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country"
+                                       options='{"no_open": True, "no_create": True}'/>
+                            </div>
+                            <field name="website" widget="url" placeholder="e.g. https://www.odoo.com"/>
+                            <field name="lang_id" options="{'no_create': True}"/>
+                            <field name="extension"/>
+                        </group>
+                        <group class="mt48">
+                            <label for="contact_name_page_lead"/>
+                            <div class="o_row">
+                                <field name="contact_name" id="contact_name_page_lead"/>
+                                <field name="title" placeholder="Title" domain="[]"
+                                       options='{"no_open": True}'/>
+                            </div>
+                            <field name="function"/>
+                            <field name="age"/>
+                            <field name="email"/>
+                            <field name="contact_role"/>
+                            <field name="accountable_for" widget="many2many_tags"/>
+                            <field name="id_number"/>
+                            <label for="mobile_page_lead" class="oe_inline"/>
+                            <div class="o_row o_row_readonly">
+                                <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger"
+                                        title="This phone number is blacklisted for SMS Marketing. Click to unblacklist."
+                                        type="object" context="{'default_phone': mobile}"
+                                        groups="base.group_user"
+                                        attrs="{'invisible': [('mobile_blacklisted', '=', False)]}"/>
+                                <field name="mobile" id="mobile_page_lead" widget="phone"/>
+                            </div>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+             <xpath expr="//field[@name='name']" position="attributes">
+                 <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@for='name']" position="attributes">
+                 <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='expected_revenue']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@for='expected_revenue']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//label[@for='probability']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='probability']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//notebook/page[@name='bank_page']" position="after">
+                <page string="Internal Notes" name="internal_notes">
+                    <field name="description" placeholder="Add a description..."/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

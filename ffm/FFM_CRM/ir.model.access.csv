@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_contact_address_types,contact.address.types,model_contact_address_types,,1,1,1,1
+access_contact_products_custom,contact.products.custom,model_contact_products_custom,,1,1,1,1

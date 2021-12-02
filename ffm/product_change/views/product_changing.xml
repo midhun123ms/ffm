@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_ocr_form_change" model="ir.ui.view">
+        <field name="name">res.partner.ocr.form.change</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[1][@name='contact_addresses']" position="attributes">
+                <attribute name="string">Contact</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='name']" position="attributes">
+                <attribute name="string">First Name</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='name']" position="attributes">
+                <attribute name="attrs">{'required': True}</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='name']" position="after">
+                <field name="mid_n" attrs="{'invisible': [('type','!=', 'contact')]}"/>
+            </xpath>
+<!--            <xpath expr="//form/sheet/field[@name='type']" position="replace">-->
+<!--                <field name="type" required="1" widget="radio" attrs="{'readonly': [('type','!=', 'contact')]}" options="{'horizontal': true}"/>-->
+<!--            </xpath>-->
+
+            <xpath expr="//form/sheet/group/group/field[@name='mid_n']" position="after">
+                <field name="lst_n" attrs="{'invisible': [('type','!=', 'contact')]}"/>
+            </xpath>
+
+            <xpath expr="//field[@name='child_ids']/form/sheet/group/group/field[@name='title']" position="replace">
+                <field name="title" invisible="1"/>
+            </xpath>
+              <xpath expr="//field/form/sheet/group/group/field[@name='function']" position="after">
+                <field name="acc_for" widget="many2many_tags" attrs="{'invisible': [('type','!=', 'contact')]}"/>
+            </xpath>
+              <xpath expr="//field[@name='child_ids']/form/sheet/group/group/field[@name='acc_for']" position="after">
+                <field name="pass_port" attrs="{'invisible': [('type','!=', 'contact')]}"/>
+            </xpath>
+
+            <xpath expr="//form/sheet/group/group/field[@name='email']" position="before">
+                <xpath expr="//form/sheet/group/group/field[@name='mobile']" position="move"/>
+            </xpath>
+
+            <xpath expr="//form/sheet/group/group/field[@name='comment']" position="attributes">
+                <attribute name="attrs">{'invisible': [('type','=', 'contact')]}</attribute>
+            </xpath>
+
+            <xpath expr="//form/sheet/group/group/field[@name='mobile']" position="after">
+                <field name="mob_one" attrs="{'invisible': [('type','!=', 'contact')]}"/>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='mobile']" position="attributes">
+                <attribute name="attrs">{'required': [('type','=', 'contact')]}</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='mob_one']" position="after">
+                <xpath expr="//form/sheet/group/group/field[@name='phone']" position="move"/>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='phone']" position="after">
+                <field name="ex_tension" attrs="{'invisible': [('type','!=', 'contact')]}"/>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='email']" position="attributes">
+                <attribute name="attrs">{'required': [('type','=', 'contact')]}</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='email']" position="after">
+                <field name="pre_language" attrs="{'invisible': [('type','!=', 'contact')]}"/>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='pre_language']" position="after">
+                <field name="age_age" attrs="{'invisible': [('type','!=', 'contact')]}"/>
+            </xpath>
+
+
+            <xpath expr="//form/sheet/field[@name='type']" position="replace">
+                 <field name="user_change" invisible="1"/>
+                <field name="type" required="1" widget="radio" attrs="{'readonly' : [('user_change', '!=', True)]}" options="{'horizontal': true}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

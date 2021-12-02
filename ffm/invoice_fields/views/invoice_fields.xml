@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+     <record id="account_invoice_form_inherit" model="ir.ui.view">
+        <field name="name">account.move.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_invoice_sent']" position='attributes'>
+                   <attribute name="attrs">{'invisible': [('state', 'in', ('draft','posted','cancel'))]}</attribute>
+            </xpath>
+             <xpath expr="//button[@name='preview_invoice']" position='before'>
+                   <button name="invoice_button" class="oe_highlight" string="Invoice" type="object"/>
+             </xpath>
+<!--              <xpath expr="//label[@for='invoice_date']" position="before">-->
+<!--                 <label for="bank_id"/>-->
+<!--&lt;!&ndash;                  <field name="bank_id"/>&ndash;&gt;-->
+<!--            </xpath>-->
+            <xpath expr="//field[@name='payment_reference']" position="before">
+                <field name="bank_id"/>
+            </xpath>
+<!--             <xpath expr="//group/group/field[@name='partner_bank_id']" position="attributes">-->
+<!--                 <attribute name="invisible">0</attribute>-->
+<!--            </xpath>-->
+
+
+        </field>
+     </record>
+
+
+
+     <record id="account.account_invoices" model="ir.actions.report">
+            <field name="name">Invoices</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">account.report_invoice_with_payments</field>
+            <field name="report_file">account.report_invoice_with_payments</field>
+            <field name="print_report_name">(object._get_report_base_filename())</field>
+            <field name="attachment">(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')</field>
+            <field name="binding_model_id" eval="False"/>
+            <field name="binding_type">report</field>
+            <field name="groups_id" eval="[(4, ref('account.group_account_invoice')),(4, ref('account.group_account_readonly'))]"/>
+     </record>
+       <record id="account.account_invoices_without_payment" model="ir.actions.report">
+              <field name="name">Invoices without Payment</field>
+              <field name="model">account.move</field>
+              <field name="report_type">qweb-pdf</field>
+              <field name="report_name">account.report_invoice</field>
+              <field name="report_file">account.report_invoice</field>
+              <field name="print_report_name">(object._get_report_base_filename())</field>
+              <field name="attachment">(object.state == 'posted') and ((object.name or 'INV').replace('/','_')+'.pdf')</field>
+              <field name="binding_model_id" eval="False"/>
+              <field name="binding_type">report</field>
+       </record>
+</odoo>

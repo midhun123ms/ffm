@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_move_form_inherit_type" model="ir.ui.view">
+        <field name="name">account.move.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <field name="invoice_date" position="after">
+                <field name="customer_type" attrs="{'required': [('move_type', '=', 'out_invoice')]}" force_save="1" readonly="1"/>
+            </field>
+            <field name="invoice_payment_term_id" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+
+            <xpath expr="//field[@name='amount_untaxed']" position="after">
+                 <field name="amount_discount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

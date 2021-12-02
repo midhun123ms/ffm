@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend_custom" name="contacts_map" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+<!--                <link rel="stylesheet" href="/FFM_CRM/static/src/css/mapstyle.css"/>-->
+<!--                <script type="text/javascript" src="/FFM_CRM/static/src/js/map.js"/>-->
+            </xpath>
+        </template>
+    </data>
+    <record id="mapview_custom" model="ir.actions.act_window">
+        <field name="name">MapView</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_id" ref="assets_backend_custom"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                map...
+            </p>
+        </field>
+    </record>
+    <menuitem id="map_submenu"
+              name="map"
+              action="mapview_custom"
+              parent="contacts.menu_contacts"
+    />
+</odoo>

@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_inherit1" model="ir.ui.view">
+        <field name="name">sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="replace">
+                <header>
+                    <field name="authorized_transaction_ids" invisible="1"/>
+                    <button name="payment_action_capture" type="object"
+                            string="Capture Transaction" class="oe_highlight"
+                            attrs="{'invisible': [('authorized_transaction_ids', '=', [])]}"/>
+                    <button name="payment_action_void" type="object"
+                            string="Void Transaction"
+                            confirm="Are you sure you want to void the authorized transaction? This action can't be undone."
+                            attrs="{'invisible': [('authorized_transaction_ids', '=', [])]}"/>
+                    <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
+                            type="action" class="btn-primary"
+                            attrs="{'invisible': [('invoice_status', '!=', 'to invoice')]}"/>
+                    <button name="%(sale.action_view_sale_advance_payment_inv)d" string="Create Invoice"
+                            type="action" context="{'default_advance_payment_method': 'percentage'}"
+                            attrs="{'invisible': ['|',('invoice_status', '!=', 'no'), ('state', '!=', 'sale')]}"/>
+                    <button name="action_quotation_send" string="Send by Email" type="object" states="draft" attrs="{'invisible': [('state', '!=', 'sdraft')]}"
+                            class="btn-primary"/>
+                    <button name="action_waiting_for_approve" id="action_approve" string="Request for Approval"
+                            class="btn-primary" type="object" attrs="{'invisible': ['|',('state', 'not in', ['draft']),('is_waiting_for_approval', '=', True)]}"/>
+<!--                    attrs="{'invisible': ['|','|', ('active','=',False), ('probability', '=', 100), ('type', '=', 'lead')]}"-->
+                    <button name="action_quotation_send" type="object" string="Send PRO-FORMA Invoice"
+                            groups="sale.group_proforma_sales" class="btn-primary"
+                            attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('invoice_count','&gt;=',1)]}"
+                            context="{'proforma': True}"/>
+                    <button name="action_confirm" id="action_confirm"
+                            string="Confirm" class="btn-primary" type="object"
+                            attrs="{'invisible': [('state', 'not in', ['sent'])]}"/>
+                    <button name="action_confirm"
+                            string="Confirm" type="object" class="btn-primary"
+                            attrs="{'invisible': ['|',('is_waiting_for_approval', '!=', True),('state', 'in', ('sale', 'approve', 'reject'))]}"/>
+                    <button name="action_quotation_send" type="object" string="Send PRO-FORMA Invoice"
+                            groups="sale.group_proforma_sales"
+                            attrs="{'invisible': ['|', ('state', '=', 'draft'), ('invoice_count','&gt;=',1)]}"
+                            context="{'proforma': True}"/>
+                    <button name="action_quotation_send" string="Send by Email" type="object" states="sent,sale"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            attrs="{'invisible': ['|', ('state', 'not in', ['draft', 'sent','sale']), ('id', '=', False)]}"/>
+                    <button name="action_draft" states="cancel" type="object" string="Set to Quotation"/>
+
+                    <button name="action_approve_button" groups="quotation_status.group_approve_access" string="Approve" type="object" attrs="{'invisible': [('state', 'not in', ['approve'])]}"/>
+                    <button name="action_reject_button" groups="quotation_status.group_approve_access" string="Reject" type="object" attrs="{'invisible': [('state', 'not in', ['approve'])]}"/>
+
+
+
+<!--                    <field name="state" widget="statusbar" statusbar_visible="WaitingForApproval,quotation,draft"/>-->
+<!--                    <field name="state" widget="statusbar"  attrs="{'invisible': [('is_waiting_for_approval', '=', False),]}"/>-->
+                    <field name="state" widget="statusbar" statusbar_visible=" "/>
+<!--                    <field name="test_state" widget="statusbar"/>-->
+                    <button name="action_approve" id="action_approve" string="Approve" class="btn-primary" type="object"
+                            attrs="{'invisible': [('state', 'not in', ['WaitingForApproval']),]}"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="is_waiting_for_approval" invisible="1"/>
+            </xpath>
+
+        </field>
+    </record>
+    <record id="quotation_creation_partner" model="ir.ui.view">
+        <field name="name">sale.order.quotation.creation</field>
+        <field name="model">sale.order</field>
+        <field name="priority">2</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/group/field[@name='partner_id']" position="replace">
+                <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode': 'customer', 'show_address': 1, 'show_vat': True}" options="{'no_create': True, 'no_edit': True}"/>
+            </xpath>
+
+            <xpath expr="//sheet/group/group/field[@name='partner_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ('sdraft', 'draft'))]}</attribute>
+            </xpath>
+
+<!--            required added in field added-->
+              <xpath expr="//sheet/group/group/field[@name='validity_date']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ('sdraft', 'draft'))], 'required': [('state', '=', 'draft')]}</attribute>
+            </xpath>
+
+<!--              <xpath expr="//sheet/group/group/field[@name='validity_date']" position="after">-->
+<!--                <field name="date_date" attrs="{'invisible': [('state', 'in', ('draft', 'WaitingForApproval', 'quotation'))]}"/>-->
+<!--            </xpath>-->
+            <xpath expr="//sheet/group/group/field[@name='payment_term_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="force_save">1</attribute>
+            </xpath>
+
+            <xpath expr="//sheet/group/group/field[@name='payment_term_id']" position="after">
+                <field name="type_customer" on_change="on_change_type_customer()" readonly="1" force_save="1"/>
+            </xpath>
+
+
+            <xpath expr="//label[@for='date_order']" position="attributes">
+                <attribute name="attrs">{'invisible': [('state', 'in', ('sdraft', 'sale', 'cancel', 'approve', 'reject'))],}</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='date_order']" position="attributes">
+                <attribute name="attrs">{'invisible': [('state', 'in', ('sdraft', 'sale', 'cancel', 'approve', 'reject'))],}</attribute>
+            </xpath>
+
+            <xpath expr="//sheet/group/group/div[2]" position="replace">
+                <field name="date_order" attrs="{'required': [('state', 'in', ['sale', 'done'])], 'invisible': [('state', 'in', ['draft', 'WaitingForApproval', 'quotation'])], 'readonly': [('state', 'not in', ['sdraft'])],}" />
+            </xpath>
+
+            <xpath expr="//field[@name='date_order'][3]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+
+<!--    <record id="view_order_form_inherit_l10n_in_sale_inherit" model="ir.ui.view">-->
+<!--        <field name="name">view_order_form_inherit_l10n_in_sale_inherit</field>-->
+<!--        <field name="model">sale.order</field>-->
+<!--        <field name="priority">2</field>-->
+<!--        <field name="inherit_id" ref="l10n_in_sale.view_order_form_inherit_l10n_in_sale"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//sheet/group/group/field[@name='l10n_in_gst_treatment']" position="attributes">-->
+<!--                <attribute name="attrs">{'readonly': [('state', 'not in', ('sdraft', 'draft'))]}</attribute>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+     <record id="sale_order_form_quote_inherit" model="ir.ui.view">
+        <field name="name">view_order_form_inherit_sale_order_form_quote</field>
+        <field name="model">sale.order</field>
+        <field name="priority">2</field>
+        <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/group/field[@name='sale_order_template_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+<!--                <attribute name="attrs">{'invisible': [('state', '=', ('sdraft'))],}</attribute>-->
+            </xpath>
+        </field>
+    </record>
+
+
+
+
+
+    <record id="sale.action_quotations_with_onboarding" model="ir.actions.act_window">
+        <field name="name">Quotations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="search_view_id" ref="sale.sale_order_view_search_inherit_quotation"/>
+        <field name="context">{'search_default_my_quotation': 1}</field>
+        <field name="domain">[('state', '!=', 'sale')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+            </p>
+            <p>
+                Once the quotation is confirmed by the customer, it becomes a sales order.
+                <br/>
+                You will be able to create an invoice and collect the payment.
+            </p>
+        </field>
+    </record>
+<!--    <record id="sale.sale_order_action_view_order_tree" model="ir.actions.act_window.view">-->
+<!--        <field name="sequence" eval="1"/>-->
+<!--        <field name="view_mode">tree</field>-->
+<!--        <field name="view_id" ref="sale.view_order_tree"/>-->
+<!--        <field name="act_window_id" ref="action_orders"/>-->
+<!--        <field name="domain">[('invoice_status', '!=', 'invoiced')]</field>-->
+<!--    </record>-->
+<!--    <record id="sale_coupon.sale_order_action" model="ir.actions.act_window">-->
+<!--        <field name="name">Sales Order</field>-->
+<!--        <field name="res_model">sale.order</field>-->
+<!--        <field name="view_id" ref="sale.view_order_tree"/>-->
+<!--        <field name="domain">[('state', '=', 'sale')]</field>-->
+<!--        <field name="context">{}</field>-->
+<!--    </record>-->
+    <record id="sale.action_orders" model="ir.actions.act_window">
+        <field name="name">Sales Orders</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="search_view_id" ref="sale.sale_order_view_search_inherit_sale"/>
+        <field name="context">{'default_state':'sdraft', 'default_is_waiting_for_approval':True}</field>
+        <field name="domain">[('state', '=', ('sale','approve','reject','sdraft'))]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new quotation, the first step of a new sale!
+            </p>
+            <p>
+                Once the quotation is confirmed, it becomes a sales order.
+                <br/>
+                You will be able to create an invoice and collect the payment.
+            </p>
+        </field>
+    </record>
+
+
+<!--    <record id="view_order_form" model="ir.ui.view">-->
+<!--        <field name="name">sale.order.form</field>-->
+<!--        <field name="model">sale.order</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--                <xpath expr="//sheet/group/group/field[@name='partner_id']" position="attributes">-->
+<!--                <attribute name="attrs">{'readonly': [('state', 'not in', ('sdraft', 'draft'))]}</attribute>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    
+</odoo>

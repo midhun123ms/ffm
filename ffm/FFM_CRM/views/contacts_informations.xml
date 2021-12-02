@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pfa_contact_custom_id" model="ir.ui.view">
+        <field name="name">pfa.contact.view.custom.name</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after"><br/>
+                 <field name="company_type" widget="radio" class="oe_edit_only" options="{'horizontal': true}"/>
+            </xpath>
+            <xpath expr="//field[@name='street2']" position="after">
+                <field name="region" placeholder="Region"/>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="business_developer"/>
+            </xpath>
+<!--            <xpath expr="//field[@name='vat']" position="after">-->
+<!--                <group string="Payment">-->
+<!--                        <group>-->
+<!--                            <field name="payment_type"/>-->
+<!--                            <field name="payment_terms"/>-->
+<!--                            <field name="credit_limit"/>-->
+<!--                            <field name="cr_no"/>-->
+<!--                            <field name="vat_no"/>-->
+<!--                            <field name="csa"/>-->
+<!--                        </group>-->
+<!--                </group>-->
+<!--            </xpath>-->
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="cr_name"/>
+                <field name="grid_id"/>
+                <field name="status"/>
+                <field name="reason"/>
+                <field name="created_on"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='sales_purchases']" position="after">
+                <page string="Address Information" name="Address Information">
+                    <group string="Address Information">
+                        <group>
+                            <field name="address_type" widget="many2many_tags"/>
+                            <field name="address_line1"/>
+                            <field name="address2"/>
+                            <field name="region"/>
+                            <field name="country"/>
+                            <field name="city"/>
+                        </group>
+                        <group>
+                            <field name="area"/>
+                            <field name="landmark"/>
+                            <field name="google_link"/>
+                            <field name="latitude"/>
+                            <field name="longitude"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//notebook/page[@name='Address Information']" position="after">
+                <page string="Quotations" name="quotations" invisible="1">
+                    <group string="Quotations">
+                        <group>
+                            <field name="customer_name"/>
+                            <field name="quote_expiry"/>
+                        </group>
+                        <group>
+                            <field name="quote_owner"/>
+                            <field name="add_product" widget="many2many_tags"/>
+                        </group>
+                        <group></group>
+                    </group>
+                    <field name="terms" placeholder="Terms and Conditions"/>
+                </page>
+            </xpath>
+<!--            <xpath expr="//notebook/page[@name='quotations']" position="after">-->
+<!--                <page string="Legal Info" name="legal_info">-->
+<!--                    <group string="Legal Information">-->
+<!--                        <group>-->
+<!--                            <field name="cr_name"/>-->
+<!--                            <field name="payment_type"/>-->
+<!--                            <field name="payment_terms"/>-->
+<!--                            <field name="credit_limit"/>-->
+<!--                            <field name="attachments" widget="file"/>-->
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                            <field name="crno"/>-->
+<!--                            <field name="cr_number" widget="file"/>-->
+<!--                            <field name="vatno"/>-->
+<!--                            <field name="vat_number" widget="file"/>-->
+<!--                            <field name="csa"/>-->
+<!--                            <field name="csa_file" widget="file"/>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                </page>-->
+<!--            </xpath>-->
+            <xpath expr="//notebook/page[@name='quotations']" position="after">
+                <page string="Bank Details" name="bank_page" invisible="1">
+                    <group string="Bank Details">
+                        <group>
+                            <field name="bank_name"/>
+                            <field name="idc"/>
+                            <field name="account_name"/>
+                        </group>
+                        <group>
+                            <field name="account_number"/>
+                            <field name="iban"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="contacts_archive_mail" model="mail.template">
+        <field name="name">Mail Notification for contacts</field>
+        <field name="email_from">shady@ffm.com.sa</field>
+        <field name="email_to">shady@ffm.com.sa</field>
+        <field name="subject">Archive Contacts Notification</field>
+        <field name="model">res.partner</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p>Dear,</p>
+                <p>Your Contacts are Archived
+                    <br/>
+                    This is a mail for notification for Archive contacts
+                    <br/>
+                </p>
+            </div>
+        </field>
+    </record>
+    <record id="base_geolocalize.view_crm_partner_geo_form" model="ir.ui.view">
+        <field name="name">res.partner.geolocation.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+<!--            <xpath expr="//field[@name='name']" position="attributes">-->
+<!--                <attribute name="invisible">1</attribute>-->
+<!--            </xpath>-->
+            <xpath expr="//field[@name='company_type']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//notebook[last()]" position="inside">
+                <page string="Location Details" name="geo_location">
+<!--                    <template id="assets_backend_custom" name="contacts_map" inherit_id="web.assets_backend">-->
+<!--                        <xpath expr="." position="inside">-->
+<!--                            <link rel="stylesheet" href="/ffm/FFM_CRM/static/src/css/mapstyle.css"/>-->
+<!--                            <script type="text/javascript" src="/ffm/FFM_CRM/static/src/js/map.js"/>-->
+<!--                        </xpath>-->
+<!--                    </template>-->
+                                        <group colspan="2" col="2">
+                                            <separator string="Geolocation" colspan="2"/>
+                                            <button
+                                                    string="find Location"
+                                                    name="geo_localize"
+                                                    colspan="2"
+                                                    icon="fa-check"
+                                                    type="object"/>
+                                            <div><br/>
+                                                <xpath expr="//field[@name='geo_localize']" position="after">
+                                                    <field name="customer_geo_location" default_focus="1" placeholder="Location Name"
+                                                            widget="gplaces_autocomplete" style= "height: 10mm;width:47%%"/>
+                                                </xpath>
+                                                <group>
+                                                    <group>
+                                                        <group>
+                                                            <span>Latitude :</span>
+                                                            <field name="partner_latitude" nolabel="1"
+                                                                   class="oe_inline"/>
+                                                            <span>Longitude:</span>
+                                                            <field name="partner_longitude" nolabel="1"
+                                                                   class="oe_inline"/>
+                                                        </group>
+                                                    </group>
+                                                </group>
+                                            </div>
+                                            <!--                                            <widget name="gmap_marker"-->
+<!--                                                    description="Truck Location"-->
+<!--                                            />-->
+<!--                                            <link rel="stylesheet" href="/ffm/FFM_CRM/static/src/css/mapstyle.css"/>-->
+<!--                                            <script type="text/javascript" src="/ffm/FFM_CRM/static/src/js/map.js"/>-->
+                                        </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

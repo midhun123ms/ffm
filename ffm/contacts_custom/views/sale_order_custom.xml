@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_order_form_inherit1_custom" model="ir.ui.view">
+        <field name="name">sale.order.form.custom</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="before">
+                <field name="reason" attrs="{'required': [('discount', '>', 0)],'invisible': ['|',('approve_name', '=', False),('discount', '=', 0)]}"/>
+                <field name="approve_name" invisible="1"/>
+
+            </xpath>
+            <xpath expr="//sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
+                <attribute name="attrs">{'readonly': [('approve_name', '=', True)]}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
